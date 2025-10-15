@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Pidima Chat Widget</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating Chat Toggle Button -->
+    <button id="chat-toggle" aria-haspopup="dialog" aria-controls="chat-widget" aria-expanded="false" title="Open chat">
+        <span class="chat-toggle-icon" aria-hidden="true">💬</span>
+        <span class="sr-only">Open chat</span>
+    </button>
+
+    <!-- Chat Widget -->
+    <section id="chat-widget" class="chat-widget" role="dialog" aria-label="Pidima AI Chat" aria-modal="false">
+        <header class="chat-header">
+            <div class="chat-title">
+                <div class="chat-avatar" aria-hidden="true">P</div>
+                <div class="chat-meta">
+                    <h1>Pidima Assistant</h1>
+                    <p class="chat-subtitle">AI documentation helper</p>
+                </div>
+            </div>
+            <div class="chat-actions">
+                <button id="theme-toggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+                <button id="chat-close" class="icon-btn" title="Close" aria-label="Close">✕</button>
+            </div>
+        </header>
+
+        <div id="chat-messages" class="chat-messages" aria-live="polite" aria-atomic="false"></div>
+
+        <div id="typing-indicator" class="typing-indicator" aria-hidden="true">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="typing-text">Pidima is typing…</span>
+        </div>
+
+        <footer class="chat-inputbar">
+            <div class="input-tools">
+                <button id="emoji-toggle" class="icon-btn" title="Insert emoji" aria-label="Insert emoji">😊</button>
+                <div id="emoji-panel" class="emoji-panel" role="menu" aria-hidden="true"></div>
+            </div>
+            <div class="input-wrap">
+                <textarea id="message-input" rows="1" placeholder="Write a message…" aria-label="Message input"></textarea>
+            </div>
+            <button id="send-btn" class="send-btn" aria-label="Send">➤</button>
+        </footer>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
