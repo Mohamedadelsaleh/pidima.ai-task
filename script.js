@@ -129,7 +129,7 @@
    * Emoji picker
    */
   const EMOJIS = [
-    '😀','😁','😂','🤣','😊','😍','🤩','😘','😇','🙂','😉','🤔','😴','🙄','😬','😮\u200d\ud83d\ude2a','😮','😢','😭','😤','😅','😎','🤓','🤖','👍','👎','👏','🙏','🔥','✨','💡','💬','📎','📝','🧠','🔍','📚','✅','❌','⏳','🚀'
+    '😀','😁','😂','🤣','😊','😍','🤩','😘','😇','🙂','😉','🤔','😴','🙄','😬','\u200d\ud83d\ude2a','😮','😢','😭','😤','😅','😎','🤓','🤖','👍','👎','👏','🙏','🔥','✨','💡','💬','📎','📝','🧠','🔍','📚','✅','❌','⏳','🚀'
   ];
   function buildEmojiPanel() {
     emojiPanel.innerHTML = '';
@@ -176,24 +176,71 @@
       typing.classList.remove('show');
     }
   }
+  function chooseReply(userText) {
+    const text = userText.trim();
+    const q = text.toLowerCase();
+
+    // Lightweight intent detection with regexes
+    const isGreeting = /^(hi|hey|hello|yo|good (morning|afternoon|evening))\b/.test(q);
+    const isThanks = /(thanks|thank you|thx|appreciate it)/.test(q);
+    const isBye = /(bye|goodbye|see ya|see you)/.test(q);
+    const asksWho = /(who are you|what are you|pidima assistant)/.test(q);
+    const asksTheme = /(dark|light).*theme|toggle theme/.test(q);
+    const asksHelp = /(help|how to|examples?|sample|what can you do)/.test(q);
+    const mentionsApi = /(api|endpoint|rest|graphql|request|response)/.test(q);
+    const mentionsAuth = /(auth|authentication|token|apikey|api key|oauth|login)/.test(q);
+    const mentionsSearch = /(search|find|where is|docs?|documentation)/.test(q);
+    const mentionsError = /(error|fail(ed|ure)|exception|bug|issue|not working)/.test(q);
+
+    if (isGreeting) {
+      return 'Hello! How can I help with your documentation today? You can ask me to summarize pages, explain APIs, or point you to relevant sections.';
+    }
+    if (isThanks) {
+      return 'You\'re welcome! If you need anything else, just ask.';
+    }
+    if (isBye) {
+      return 'Goodbye! I\'m here whenever you need help with the docs.';
+    }
+    if (asksWho) {
+      return 'I\'m the Pidima Assistant. I help you explore, summarize, and answer questions about your project documentation and APIs.';
+    }
+    if (asksTheme) {
+      return 'Use the moon/sun button in the header to toggle between dark and light themes. Your choice is saved for next time.';
+    }
+    if (mentionsError) {
+      return 'Let\'s debug this together. Please share the exact error message and context (endpoint or page). Common steps: \n- Confirm request method and URL\n- Check authentication/permissions\n- Validate required fields\n- Inspect server logs if available';
+    }
+    if (mentionsAuth) {
+      return 'Authentication tips:\n- Use a short-lived access token and refresh it securely\n- Send the token in the Authorization header (e.g., Bearer <token>)\n- For API keys, restrict by origin/IP when possible\n- Never commit secrets to source control';
+    }
+    if (mentionsApi) {
+      return 'For APIs, I can help by outlining request/response shapes, example cURL/JS fetch calls, and common status codes. Tell me the endpoint or describe what you want to achieve.';
+    }
+    if (mentionsSearch) {
+      return 'Tell me a concept and I\'ll point you to relevant docs sections. For example: "deployment steps", "webhook retries", or "rate limits".';
+    }
+    if (asksHelp || q.endsWith('?')) {
+      return `Here\'s what I can do:\n- Answer questions about your docs and APIs\n- Summarize long pages into bullet points\n- Provide code snippets (cURL/JS)\n- Link you to relevant sections\n\nAsk something specific like: \n"How do I authenticate requests?" or "Summarize the onboarding guide."`;
+    }
+
+    // Fallback: reflective + guide
+    return `You said: "${text}"\n\nI can help summarize documentation, answer questions, and link you to relevant sections. Try asking something like:\n- "What does the onboarding API return?"\n- "Generate a summary of the deployment steps."`;
+  }
+
   function simulateAiReply(userText) {
-    // Basic heuristic to craft a helpful response
-    const reply = `You said: "${userText.trim()}"\n\nI can help summarize documentation, answer questions, and link you to relevant sections. Try asking something like: \n- "What does the onboarding API return?"\n- "Generate a summary of the deployment steps."`;
+    const reply = chooseReply(userText);
+    const baseDelay = 600;
+    const variableDelay = Math.min(1400, Math.max(400, reply.length * 6));
 
     showTyping(true);
-    // After 900ms, deliver; after 1400ms, read; after 1600ms, display reply
-    setTimeout(() => {
-      updateLastOutgoingStatus('delivered');
-    }, 900);
-    setTimeout(() => {
-      updateLastOutgoingStatus('read');
-    }, 1400);
-    // Show assistant reply slightly after status updates
+    setTimeout(() => updateLastOutgoingStatus('delivered'), Math.min(900, baseDelay));
+    setTimeout(() => updateLastOutgoingStatus('read'), Math.min(1400, baseDelay + 300));
+
     clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => {
       showTyping(false);
       addMessage({ author: 'bot', text: reply });
-    }, 1600);
+    }, baseDelay + variableDelay);
   }
 
   /**

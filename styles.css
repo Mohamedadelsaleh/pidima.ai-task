@@ -152,10 +152,10 @@ body {
 }
 .typing-text { font-size: 12px; color: var(--muted); }
 
-.chat-inputbar {
+.chat-input-bar {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  align-items: end;
+  align-items: center;
   gap: 8px;
   padding: 10px;
   border-top: 1px solid var(--border);
@@ -181,7 +181,7 @@ body {
   display: none; grid-template-columns: repeat(8, 1fr); gap: 6px;
 }
 .emoji-panel.show { display: grid; }
-.emoji-btn { font-size: 20px; line-height: 1; padding: 6px; border-radius: 8px; background: transparent; border: 1px solid transparent; cursor: pointer; }
+.emoji-btn { font-size: 20px; line-height: 1; border-radius: 8px; background: transparent; border: 1px solid transparent; cursor: pointer; }
 .emoji-btn:hover { background: rgba(255,255,255,.06); border-color: var(--border); }
 
 /* Small screens adjustments */
